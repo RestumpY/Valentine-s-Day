@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site pour ma Valentine</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6f1;
+            color: #ff4081;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .error-404 h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            background-color: #ff4081;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #f50057;
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        .question h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .btn-no {
+            position: absolute;
+            transition: left 0.3s ease, top 0.3s ease;
+        }
+
+        .btn-yes {
+            background-color: #4caf50;
+        }
+
+        .btn-yes:hover {
+            background-color: #388e3c;
+        }
+
+        .btn-no:hover {
+            background-color: #d50000;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff4081;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-404">
+            <h1>Erreur 404 - Page introuvable</h1>
+            <button class="btn" id="reload-btn">Recharger</button>
+        </div>
+
+        <div class="question hidden" id="question">
+            <h1>Souhaites-tu être ma Valentine ?</h1>
+            <div class="buttons">
+                <button class="btn btn-yes" id="btn-yes">Oui</button>
+                <button class="btn btn-no" id="btn-no">Non</button>
+            </div>
+        </div>
+
+        <div class="message hidden" id="message">
+            Merci, tu es la meilleure <3
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('reload-btn').addEventListener('click', function() {
+            document.querySelector('.error-404').classList.add('hidden');
+            document.getElementById('question').classList.remove('hidden');
+        });
+
+        const btnNo = document.getElementById('btn-no');
+        const phrases = [
+            "T'es sérieuse ?",
+            "Arrête wesh ",
+            "Abuuuuse",
+            "Chien",
+            "T'es dans le monde la musique toi ?",
+            "Ravet",
+            "Tu n'as pas le choix"
+        ];
+
+        btnNo.style.position = "relative"; 
+        btnNo.style.left = "0";
+        btnNo.style.top = "0";
+        btnNo.addEventListener('mouseover', function() {
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            btnNo.textContent = randomPhrase;
+
+            const randomX = Math.random() * 100;
+            const randomY = Math.random() * 100; 
+            btnNo.style.left = randomX + '%';
+            btnNo.style.top = randomY + '%';
+        });
+
+        document.getElementById('btn-yes').addEventListener('click', function() {
+            document.getElementById('message').classList.remove('hidden');
+            document.getElementById('question').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
