@@ -1,149 +1,387 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site pour ma Valentine</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #ffe6f1;
-            color: #ff4081;
-            position: relative;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>404 Not Found</title>
 
-        .container {
-            text-align: center;
-            position: relative;
-        }
+<style>
+:root{
+  --bg1:#0b1020;
+  --bg2:#1b0f2a;
+  --txt: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.72);
+  --pink:#ff4d8d;
+  --pink2:#ff7aa8;
+  --green:#36d399;
 
-        .error-404 h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
+  --err-bg:#000;
+  --err-txt:#fff;
+  --err-muted:rgba(255,255,255,.75);
+}
 
-        .hidden {
-            display: none;
-        }
+*{box-sizing:border-box}
 
-        .btn {
-            padding: 12px 24px;
-            font-size: 18px;
-            border: none;
-            border-radius: 25px;
-            background-color: #ff4081;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+body{
+  margin:0;
+  min-height:100vh;
+  overflow:hidden;
+  font-family: system-ui, sans-serif;
+  color: var(--txt);
+  background:
+    radial-gradient(1200px 800px at 20% 20%, rgba(255,77,141,.22), transparent 55%),
+    radial-gradient(900px 700px at 85% 35%, rgba(54,211,153,.16), transparent 55%),
+    linear-gradient(160deg, var(--bg1), var(--bg2));
+}
 
-        .btn:hover {
-            background-color: #f50057;
-        }
+/* Coeurs */
+.hearts{position:fixed;inset:0;pointer-events:none;opacity:.5}
+.heart{
+  position:absolute;
+  font-size:22px;
+  transform:translateY(110vh);
+  animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-20vh)}
+}
 
-        .btn:focus {
-            outline: none;
-        }
+/* 404 */
+.screen404{
+  position:fixed;inset:0;
+  background:black;
+  color:white;
+  display:grid;
+  place-items:center;
+  z-index:50;
+}
 
-        .question h1 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
+.err{
+  font-family: monospace;
+  width:min(800px,90vw);
+}
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            position: relative;
-        }
+.err h1{
+  font-size:60px;
+  margin:0 0 10px;
+}
 
-        .btn-no {
-            position: absolute;
-            transition: left 0.3s ease, top 0.3s ease;
-        }
+.reload{
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  padding:10px 14px;
+  cursor:pointer;
+  margin-top:16px;
+}
 
-        .btn-yes {
-            background-color: #4caf50;
-        }
+/* Stage */
+.stage{
+  position:fixed;
+  inset:0;
+  display:none;
+}
+.stage.show{display:block}
 
-        .btn-yes:hover {
-            background-color: #388e3c;
-        }
+.question{
+  position:fixed;
+  top:35%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
 
-        .btn-no:hover {
-            background-color: #d50000;
-        }
+.question h1{
+  font-size:48px;
+}
 
-        .message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ff4081;
-        }
-    </style>
+.btn{
+  position:fixed;
+  border:0;
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:16px;
+}
+
+#yesBtn{
+  background:linear-gradient(#46f2b1,var(--green));
+  color:#062012;
+  left:50%;
+  top:55%;
+  transform:translate(-50%,-50%);
+}
+
+#noBtn{
+  background:linear-gradient(var(--pink2),var(--pink));
+  color:#2a0012;
+  left:65%;
+  top:65%;
+  transform:translate(-50%,-50%);
+}
+
+/* Result */
+.result{
+  position:fixed;
+  left:50%;
+  top:70%;
+  transform:translate(-50%,-50%);
+  background:rgba(54,211,153,.2);
+  padding:12px;
+  border-radius:14px;
+  display:none;
+}
+.result.show{display:block}
+
+/* Surprise */
+#surprise{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  place-items:center;
+  z-index:999;
+}
+
+#surpriseBox{
+  width:min(900px,95vw);
+  background:rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:18px;
+  backdrop-filter:blur(10px);
+}
+
+#carouselImg{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+  border-radius:14px;
+}
+
+.navBtn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+#prev{left:10px}
+#next{right:10px}
+</style>
 </head>
+
+<audio id="music" preload="auto" loop>
+  <source src="lethergo.mp3" type="audio/mpeg">
+</audio>
+
 <body>
-    <div class="container">
-        <div class="error-404">
-            <h1>Erreur 404 - Page introuvable</h1>
-            <button class="btn" id="reload-btn">Recharger</button>
-        </div>
 
-        <div class="question hidden" id="question">
-            <h1>Souhaites-tu être ma Valentine ?</h1>
-            <div class="buttons">
-                <button class="btn btn-yes" id="btn-yes">Oui</button>
-                <button class="btn btn-no" id="btn-no">Non</button>
-            </div>
-        </div>
+<div class="hearts" id="hearts"></div>
 
-        <div class="message hidden" id="message">
-            Merci, tu es la meilleure <3
-        </div>
+<!-- 404 -->
+<div class="screen404" id="screen404">
+  <div class="err">
+    <h1>404 Not Found</h1>
+    <p>The requested URL was not found.</p>
+    <p>Status: 404</p>
+    <button class="reload" id="reloadBtn">RELOAD</button>
+  </div>
+</div>
+
+<!-- Stage -->
+<div class="stage" id="stage">
+
+  <div class="question">
+    <h1>Veux-tu être ma Valentine ?</h1>
+  </div>
+
+  <button class="btn" id="yesBtn">Oui </button>
+  <button class="btn" id="noBtn">Non </button>
+
+  <div class="result" id="result">
+    Je t'aime
+  </div>
+
+</div>
+
+<!-- Surprise -->
+<div id="surprise">
+  <div id="surpriseBox">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>🎁 Week-end à Moret-Loing-et-Orvanne</h2>
+      <button class="reload" id="closeSurprise">✕</button>
     </div>
 
-    <script>
-        document.getElementById('reload-btn').addEventListener('click', function() {
-            document.querySelector('.error-404').classList.add('hidden');
-            document.getElementById('question').classList.remove('hidden');
-        });
+    <div style="position:relative">
 
-        const btnNo = document.getElementById('btn-no');
-        const phrases = [
-            "T'es sérieuse ?",
-            "Arrête wesh ",
-            "Abuuuuse",
-            "Chien",
-            "T'es dans le monde la musique toi ?",
-            "Ravet",
-            "Tu n'as pas le choix"
-        ];
+      <img id="carouselImg">
 
-        btnNo.style.position = "relative"; 
-        btnNo.style.left = "0";
-        btnNo.style.top = "0";
-        btnNo.addEventListener('mouseover', function() {
-            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-            btnNo.textContent = randomPhrase;
+      <button class="reload navBtn" id="prev">‹</button>
+      <button class="reload navBtn" id="next">›</button>
 
-            const randomX = Math.random() * 100;
-            const randomY = Math.random() * 100; 
-            btnNo.style.left = randomX + '%';
-            btnNo.style.top = randomY + '%';
-        });
+    </div>
 
-        document.getElementById('btn-yes').addEventListener('click', function() {
-            document.getElementById('message').classList.remove('hidden');
-            document.getElementById('question').classList.add('hidden');
-        });
-    </script>
+    <p style="margin-top:10px">
+      <a href="https://www.airbnb.fr/rooms/969435105550039820"
+         target="_blank"
+         style="color:white">
+        Voir l’annonce ↗
+      </a>
+    </p>
+
+  </div>
+</div>
+
+<script>
+
+/* Coeurs */
+const hearts = document.getElementById("hearts");
+const emojis=["💗","💖","🍆","🍑","💞","💕","❤️‍🔥","💓"];
+
+for(let i=0;i<15;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=8+Math.random()*8+"s";
+  h.style.animationDelay=-Math.random()*10+"s";
+  hearts.appendChild(h);
+}
+
+/* 404 */
+const reloadBtn=document.getElementById("reloadBtn");
+const screen404=document.getElementById("screen404");
+const stage=document.getElementById("stage");
+
+const music = document.getElementById("music");
+
+reloadBtn.onclick = async () => {
+  reloadBtn.textContent = "LOADING...";
+
+  // Lance la musique après clic (autorisé par le navigateur)
+  try {
+    music.volume = 0.4; // volume doux
+    await music.play();
+  } catch(e){
+    console.log("Musique bloquée :", e);
+  }
+
+  setTimeout(()=>{
+    screen404.style.display="none";
+    stage.classList.add("show");
+    initNo();
+  },600);
+};
+
+/* Bouton NON */
+const noBtn=document.getElementById("noBtn");
+let mouseX=0,mouseY=0;
+
+let pos={x:window.innerWidth*0.65,y:window.innerHeight*0.65};
+let vel={x:0,y:0};
+
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+
+window.onmousemove=e=>{
+  mouseX=e.clientX;
+  mouseY=e.clientY;
+};
+
+function initNo(){
+  requestAnimationFrame(move);
+}
+
+function move(){
+
+  const r=noBtn.getBoundingClientRect();
+  const bx=r.left+r.width/2;
+  const by=r.top+r.height/2;
+
+  const dx=bx-mouseX;
+  const dy=by-mouseY;
+
+  const dist=Math.hypot(dx,dy);
+
+  if(dist<170){
+    vel.x+=dx/dist*2;
+    vel.y+=dy/dist*2;
+  }
+
+  vel.x*=.85;
+  vel.y*=.85;
+
+  pos.x+=vel.x;
+  pos.y+=vel.y;
+
+  const minX=r.width/2+10;
+  const maxX=innerWidth-minX;
+  const minY=r.height/2+10;
+  const maxY=innerHeight-minY;
+
+  pos.x=clamp(pos.x,minX,maxX);
+  pos.y=clamp(pos.y,minY,maxY);
+
+  noBtn.style.left=pos.x+"px";
+  noBtn.style.top=pos.y+"px";
+
+  requestAnimationFrame(move);
+}
+
+noBtn.onclick=e=>e.preventDefault();
+
+/* OUI */
+const yesBtn=document.getElementById("yesBtn");
+const result=document.getElementById("result");
+
+yesBtn.onclick=()=>{
+  result.classList.add("show");
+  noBtn.style.display="none";
+  openSurprise();
+};
+
+/* Surprise */
+
+const surprise=document.getElementById("surprise");
+const closeSurprise=document.getElementById("closeSurprise");
+
+const imgs=[
+"https://a0.muscache.com/im/pictures/miso/Hosting-969435105550039820/original/629bf8d9-99e6-46aa-9001-d8d1e8273b2f.jpeg?im_w=1200",
+"https://a0.muscache.com/im/pictures/miso/Hosting-969435105550039820/original/01f73060-36f0-4edf-b98a-0f04b614f373.jpeg?im_w=1200",
+"https://a0.muscache.com/im/pictures/miso/Hosting-969435105550039820/original/5786db31-b23f-4eec-9770-c0d6bff11757.jpeg?im_w=1200",
+"https://a0.muscache.com/im/pictures/miso/Hosting-969435105550039820/original/dab2738c-3c94-442b-9685-5b02436d870a.jpeg?im_w=1200",
+"https://a0.muscache.com/im/pictures/miso/Hosting-969435105550039820/original/5f200055-7835-4dd2-82db-2627f32fea77.jpeg?im_w=1200"
+];
+
+let i=0;
+const img=document.getElementById("carouselImg");
+
+function update(){
+  img.src=imgs[i];
+}
+
+function openSurprise(){
+  i=0;
+  update();
+  surprise.style.display="grid";
+}
+
+closeSurprise.onclick=()=>{
+  surprise.style.display="none";
+};
+
+document.getElementById("prev").onclick=()=>{
+  i=(i-1+imgs.length)%imgs.length;
+  update();
+};
+
+document.getElementById("next").onclick=()=>{
+  i=(i+1)%imgs.length;
+  update();
+};
+
+</script>
+
 </body>
 </html>
