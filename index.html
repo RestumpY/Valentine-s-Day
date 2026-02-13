@@ -10,14 +10,9 @@
   --bg1:#0b1020;
   --bg2:#1b0f2a;
   --txt: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.72);
   --pink:#ff4d8d;
   --pink2:#ff7aa8;
   --green:#36d399;
-
-  --err-bg:#000;
-  --err-txt:#fff;
-  --err-muted:rgba(255,255,255,.75);
 }
 
 *{box-sizing:border-box}
@@ -39,7 +34,6 @@ body{
 .heart{
   position:absolute;
   font-size:22px;
-  transform:translateY(110vh);
   animation:floatUp linear infinite;
 }
 @keyframes floatUp{
@@ -56,17 +50,6 @@ body{
   place-items:center;
   z-index:50;
 }
-
-.err{
-  font-family: monospace;
-  width:min(800px,90vw);
-}
-
-.err h1{
-  font-size:60px;
-  margin:0 0 10px;
-}
-
 .reload{
   border:1px solid white;
   background:transparent;
@@ -91,35 +74,29 @@ body{
   transform:translate(-50%,-50%);
   text-align:center;
 }
+.question h1{font-size:48px}
 
-.question h1{
-  font-size:48px;
-}
-
+/* Boutons */
 .btn{
-  position:fixed;
   border:0;
   border-radius:999px;
-  padding:12px 18px;
+  padding:14px 22px;
   font-weight:900;
   cursor:pointer;
   font-size:16px;
+  position:fixed;                /* ✅ on gère tout en fixed */
+  transform:translate(-50%,-50%);/* ✅ centrage propre par bouton */
+  z-index:20;
 }
 
 #yesBtn{
   background:linear-gradient(#46f2b1,var(--green));
   color:#062012;
-  left:50%;
-  top:55%;
-  transform:translate(-50%,-50%);
 }
 
 #noBtn{
   background:linear-gradient(var(--pink2),var(--pink));
   color:#2a0012;
-  left:65%;
-  top:65%;
-  transform:translate(-50%,-50%);
 }
 
 /* Result */
@@ -132,6 +109,7 @@ body{
   padding:12px;
   border-radius:14px;
   display:none;
+  z-index:30;
 }
 .result.show{display:block}
 
@@ -144,7 +122,6 @@ body{
   place-items:center;
   z-index:999;
 }
-
 #surpriseBox{
   width:min(900px,95vw);
   background:rgba(255,255,255,.08);
@@ -152,20 +129,17 @@ body{
   padding:18px;
   backdrop-filter:blur(10px);
 }
-
 #carouselImg{
   width:100%;
   height:420px;
   object-fit:cover;
   border-radius:14px;
 }
-
 .navBtn{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
 }
-
 #prev{left:10px}
 #next{right:10px}
 </style>
@@ -181,10 +155,9 @@ body{
 
 <!-- 404 -->
 <div class="screen404" id="screen404">
-  <div class="err">
+  <div>
     <h1>404 Not Found</h1>
     <p>The requested URL was not found.</p>
-    <p>Status: 404</p>
     <button class="reload" id="reloadBtn">RELOAD</button>
   </div>
 </div>
@@ -196,12 +169,11 @@ body{
     <h1>Veux-tu être ma Valentine ?</h1>
   </div>
 
-  <button class="btn" id="yesBtn">Oui </button>
-  <button class="btn" id="noBtn">Non </button>
+  <!-- ✅ plus de btn-group : on place Oui/Non via JS -->
+  <button class="btn" id="yesBtn">Oui</button>
+  <button class="btn" id="noBtn">Non</button>
 
-  <div class="result" id="result">
-    Je t'aime
-  </div>
+  <div class="result" id="result">Je t'aime ❤️</div>
 
 </div>
 
@@ -215,12 +187,9 @@ body{
     </div>
 
     <div style="position:relative">
-
       <img id="carouselImg">
-
       <button class="reload navBtn" id="prev">‹</button>
       <button class="reload navBtn" id="next">›</button>
-
     </div>
 
     <p style="margin-top:10px">
@@ -235,18 +204,15 @@ body{
 </div>
 
 <script>
-
 /* Coeurs */
-const hearts = document.getElementById("hearts");
-const emojis=["💗","💖","🍆","🍑","💞","💕","❤️‍🔥","💓"];
-
+const hearts=document.getElementById("hearts");
+const emojis=["💗","💖","💞","💕","❤️‍🔥","💓"];
 for(let i=0;i<15;i++){
   const h=document.createElement("div");
   h.className="heart";
-  h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  h.textContent=emojis[Math.random()*emojis.length|0];
   h.style.left=Math.random()*100+"vw";
   h.style.animationDuration=8+Math.random()*8+"s";
-  h.style.animationDelay=-Math.random()*10+"s";
   hearts.appendChild(h);
 }
 
@@ -254,59 +220,82 @@ for(let i=0;i<15;i++){
 const reloadBtn=document.getElementById("reloadBtn");
 const screen404=document.getElementById("screen404");
 const stage=document.getElementById("stage");
+const music=document.getElementById("music");
 
-const music = document.getElementById("music");
-
-reloadBtn.onclick = async () => {
-  reloadBtn.textContent = "LOADING...";
-
-  // Lance la musique après clic (autorisé par le navigateur)
-  try {
-    music.volume = 0.4; // volume doux
+reloadBtn.onclick=async()=>{
+  reloadBtn.textContent="LOADING...";
+  try{
+    music.volume=0.4;
     await music.play();
-  } catch(e){
-    console.log("Musique bloquée :", e);
-  }
+  }catch{}
 
   setTimeout(()=>{
     screen404.style.display="none";
     stage.classList.add("show");
-    initNo();
+    layoutButtons();   // ✅ place Oui/Non avec grand espace
+    initNo();          // ✅ lance la fuite
   },600);
 };
 
-/* Bouton NON */
+/* Boutons */
 const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+
 let mouseX=0,mouseY=0;
-
-let pos={x:window.innerWidth*0.65,y:window.innerHeight*0.65};
+let pos={x:0,y:0};
 let vel={x:0,y:0};
-
-function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
 
 window.onmousemove=e=>{
   mouseX=e.clientX;
   mouseY=e.clientY;
 };
 
-function initNo(){
+function clamp(v,min,max){
+  return Math.max(min,Math.min(max,v));
+}
+
+/* ✅ Placement garanti : Oui à gauche du centre, Non à droite, espace XXL */
+function layoutButtons(){
+  // force un layout stable
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight * 0.55;
+
+  const yesW = yesBtn.getBoundingClientRect().width;
+  const noW  = noBtn.getBoundingClientRect().width;
+
+  const spacing = 160; // 🔥 augmente encore si tu veux (200, 240...)
+
+  const yesX = centerX - (spacing/2) - (yesW/2);
+  const noX  = centerX + (spacing/2) + (noW/2);
+
+  yesBtn.style.left = yesX + "px";
+  yesBtn.style.top  = centerY + "px";
+
+  // position initiale du Non (avant fuite)
+  pos.x = noX;
+  pos.y = centerY;
+
+  noBtn.style.left = pos.x + "px";
+  noBtn.style.top  = pos.y + "px";
+}
+
+/* ✅ fuite */
+function initNo() {
   requestAnimationFrame(move);
 }
 
 function move(){
-
   const r=noBtn.getBoundingClientRect();
   const bx=r.left+r.width/2;
   const by=r.top+r.height/2;
 
   const dx=bx-mouseX;
   const dy=by-mouseY;
-
   const dist=Math.hypot(dx,dy);
 
-  if(dist<170){
-    vel.x+=dx/dist*2;
-    vel.y+=dy/dist*2;
+  if(dist<160){
+    vel.x+=dx/dist*2.5;
+    vel.y+=dy/dist*2.5;
   }
 
   vel.x*=.85;
@@ -315,16 +304,11 @@ function move(){
   pos.x+=vel.x;
   pos.y+=vel.y;
 
-  const minX=r.width/2+10;
-  const maxX=innerWidth-minX;
-  const minY=r.height/2+10;
-  const maxY=innerHeight-minY;
+  pos.x=clamp(pos.x,60,innerWidth-60);
+  pos.y=clamp(pos.y,60,innerHeight-60);
 
-  pos.x=clamp(pos.x,minX,maxX);
-  pos.y=clamp(pos.y,minY,maxY);
-
-  noBtn.style.left=pos.x+"px";
-  noBtn.style.top=pos.y+"px";
+  noBtn.style.left = pos.x + "px";
+  noBtn.style.top  = pos.y + "px";
 
   requestAnimationFrame(move);
 }
@@ -332,7 +316,6 @@ function move(){
 noBtn.onclick=e=>e.preventDefault();
 
 /* OUI */
-const yesBtn=document.getElementById("yesBtn");
 const result=document.getElementById("result");
 
 yesBtn.onclick=()=>{
@@ -342,7 +325,6 @@ yesBtn.onclick=()=>{
 };
 
 /* Surprise */
-
 const surprise=document.getElementById("surprise");
 const closeSurprise=document.getElementById("closeSurprise");
 
@@ -357,9 +339,7 @@ const imgs=[
 let i=0;
 const img=document.getElementById("carouselImg");
 
-function update(){
-  img.src=imgs[i];
-}
+function update(){ img.src=imgs[i]; }
 
 function openSurprise(){
   i=0;
@@ -367,20 +347,23 @@ function openSurprise(){
   surprise.style.display="grid";
 }
 
-closeSurprise.onclick=()=>{
-  surprise.style.display="none";
-};
+closeSurprise.onclick=()=>{ surprise.style.display="none"; };
 
 document.getElementById("prev").onclick=()=>{
   i=(i-1+imgs.length)%imgs.length;
   update();
 };
-
 document.getElementById("next").onclick=()=>{
   i=(i+1)%imgs.length;
   update();
 };
 
+/* ✅ Si la fenêtre change de taille, on re-place Oui/Non */
+window.addEventListener("resize", () => {
+  if(stage.classList.contains("show")){
+    layoutButtons();
+  }
+});
 </script>
 
 </body>
